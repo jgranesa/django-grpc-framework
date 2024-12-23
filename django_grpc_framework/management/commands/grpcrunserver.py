@@ -52,9 +52,11 @@ class Command(BaseCommand):
             await self._serve()
 
     async def _serve(self):
+        server_options = getattr(grpc_settings, 'SERVER_OPTIONS', [])
+        interceptors = getattr(grpc_settings, 'SERVER_INTERCEPTORS', [])
         server = grpc.aio.server(
-            options=grpc_settings.SERVER_OPTIONS,
-            interceptors=grpc_settings.SERVER_INTERCEPTORS
+            options=server_options,
+            interceptors=interceptors
         )
         grpc_settings.ROOT_HANDLERS_HOOK(server)
         server.add_insecure_port(self.address)
